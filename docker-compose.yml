@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: bestrong-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpass
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - bestrong-network
+
+  backend:
+    build: ./backend
+    container_name: bestrong-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      PORT: 3000
+      MONGO_URI: "mongodb://admin:adminpass@mongo:27017/bestrong?authSource=admin"
+      JWT_SECRET: "lizulilapelona"
+      JWT_EXPIRES_IN: "1h"
+      NODE_ENV: "development"
+    networks:
+      - bestrong-network
+    volumes:
+      - ./backend:/app
+
+volumes:
+  mongodb_data:
+
+networks:
+  bestrong-network:
+    driver: bridge
