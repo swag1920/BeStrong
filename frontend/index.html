@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BeStrong - Tu Gimnasio Digital</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="auth-container">
+            <div class="logo">
+                <h1>💪 BESTRONG</h1>
+                <p>Tu gimnasio digital</p>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <h2>Iniciar Sesión</h2>
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="Correo electrónico" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Contraseña" required />
+                </div>
+                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                <p class="auth-switch">¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pantalla de Registro -->
+    <div id="registerScreen" class="screen">
+        <div class="auth-container">
+            <div class="logo">
+                <h1>💪 BESTRONG</h1>
+                <p>Tu gimnasio digital</p>
+            </div>
+            <form id="registerForm" class="auth-form">
+                <h2>Registro</h2>
+                <div class="form-group">
+                    <input type="text" id="registrarnombre" placeholder="Nombre completo" required />
+                </div>
+                <div class="form-group">
+                    <input type="email" id="registarEmail" placeholder="Correo electrónico" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registrarPassword" placeholder="Contraseña" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmarPassword" placeholder="Confirmar contraseña" required />
+                </div>
+                <button type="submit" class="btn-primary">Registrarse</button>
+                <p class="auth-switch">¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div id="mainApp" class="screen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>💪 BESTRONG</h1>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navegación -->
+        <nav class="nav">
+            <button class="nav-btn active" onclick="showSection('inicio', event)">Inicio</button>
+            <button class="nav-btn" onclick="showSection('panel', event)">Panel</button>
+            <button class="nav-btn" onclick="showSection('actividades', event)">Actividades</button>
+            <button class="nav-btn" onclick="showSection('nutricion', event)">Nutrición</button>
+            <button class="nav-btn" onclick="showSection('historial', event)">Historial</button>
+        </nav>
+
+        <!-- Sección Inicio -->
+        <section id="inicio" class="section active">
+            <div class="welcome-container">
+                <h2>¡Bienvenido a BeStrong!</h2>
+                <div class="welcome-content">
+                    <div class="welcome-card">
+                        <h3>🏋️‍♂️ Entrena Fuerte</h3>
+                        <p>Accede a una amplia variedad de ejercicios y rutinas personalizadas para alcanzar tus objetivos fitness.</p>
+                    </div>
+                    <div class="welcome-card">
+                        <h3>📊 Monitorea tu Progreso</h3>
+                        <p>Visualiza tus estadísticas de calorías, tiempo de actividad y progreso en tiempo real.</p>
+                    </div>
+                    <div class="welcome-card">
+                        <h3>🥗 Nutrición Balanceada</h3>
+                        <p>Descubre opciones nutritivas para desayuno, comida y cena que complementen tu entrenamiento.</p>
+                    </div>
+                    <div class="welcome-card">
+                        <h3>📅 Planifica tu Rutina</h3>
+                        <p>Organiza tus actividades con nuestro calendario interactivo y mantén la constancia.</p>
+                    </div>
+                </div>
+                <div class="motivation">
+                    <h3>💪 "El éxito no es casualidad. Es trabajo duro, perseverancia, aprendizaje y sacrificio."</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Panel -->
+        <section id="panel" class="section">
+            <div class="panel-container">
+                <h2>Panel de Control</h2>
+                <div class="chart-container">
+                    <canvas id="statsChart"></canvas>
+                </div>
+                <div class="stats-circles">
+                    <div class="stat-circle green">
+                        <div class="stat-number" id="caloriesConsumed">0</div>
+                        <div class="stat-label">Calorías Consumidas</div>
+                    </div>
+                    <div class="stat-circle blue">
+                        <div class="stat-number" id="activityMinutes">0</div>
+                        <div class="stat-label">Minutos de Actividad</div>
+                    </div>
+                    <div class="stat-circle orange">
+                        <div class="stat-number" id="caloriesBurned">0</div>
+                        <div class="stat-label">Calorías Quemadas</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Actividades -->
+        <section id="actividades" class="section">
+            <div class="activities-container">
+                <h2>Actividades</h2>
+                <div class="activities-list">
+                    <h2>Actividades Disponibles</h2>
+                    <div class="activity-grid">
+                        <div class="activity-card" data-activity="yoga">
+                            <h4>🧘‍♀️ Yoga</h4>
+                            <p><strong>Duración:</strong> 60 min</p>
+                            <p><strong>Calorías:</strong> 200</p>
+                            <p><strong>Beneficios:</strong> Flexibilidad, relajación, equilibrio</p>
+                            <button class="btn-start" onclick="startActivity('Yoga', 60, 200)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="deportes">
+                            <h4>⚽ Deportes en Equipo</h4>
+                            <p><strong>Duración:</strong> 90 min</p>
+                            <p><strong>Calorías:</strong> 400</p>
+                            <p><strong>Beneficios:</strong> Cardio, coordinación, trabajo en equipo</p>
+                            <button class="btn-start" onclick="startActivity('Deportes en Equipo', 90, 400)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="natacion">
+                            <h4>🏊‍♂️ Natación</h4>
+                            <p><strong>Duración:</strong> 45 min</p>
+                            <p><strong>Calorías:</strong> 350</p>
+                            <p><strong>Beneficios:</strong> Cardio completo, bajo impacto</p>
+                            <button class="btn-start" onclick="startActivity('Natación', 45, 350)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="gimnasio">
+                            <h4>🏋️‍♂️ Gimnasio</h4>
+                            <p><strong>Duración:</strong> 75 min</p>
+                            <p><strong>Calorías:</strong> 300</p>
+                            <p><strong>Beneficios:</strong> Fuerza, resistencia, tonificación</p>
+                            <button class="btn-start" onclick="startActivity('Gimnasio', 75, 300)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="correr">
+                            <h4>🏃‍♂️ Correr</h4>
+                            <p><strong>Duración:</strong> 30 min</p>
+                            <p><strong>Calorías:</strong> 300</p>
+                            <p><strong>Beneficios:</strong> Cardio, resistencia, quema grasa</p>
+                            <button class="btn-start" onclick="startActivity('Correr', 30, 300)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="ciclismo">
+                            <h4>🚴‍♂️ Ciclismo</h4>
+                            <p><strong>Duración:</strong> 60 min</p>
+                            <p><strong>Calorías:</strong> 400</p>
+                            <p><strong>Beneficios:</strong> Cardio, piernas, bajo impacto</p>
+                            <button class="btn-start" onclick="startActivity('Ciclismo', 60, 400)">Comenzar Sesión</button>
+                        </div>
+                        <div class="activity-card" data-activity="baile">
+                            <h4>💃 Baile</h4>
+                            <p><strong>Duración:</strong> 45 min</p>
+                            <p><strong>Calorías:</strong> 250</p>
+                            <p><strong>Beneficios:</strong> Cardio, coordinación, diversión</p>
+                            <button class="btn-start" onclick="startActivity('Baile', 45, 250)">Comenzar Sesión</button>
+                        </div>
+                    </div>
+
+                    <!-- Actividades del día -->
+                    <div id="activitiesToday" style="margin-top:20px;">
+                        <!-- Se rellenará con las actividades del día -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Nutrición -->
+        <section id="nutricion" class="section">
+            <div class="nutrition-container">
+                <h2>Nutrición</h2>
+                <div class="nutrition-summary">
+                    <h3>Calorías del Día: <span id="dailyCalories">0</span></h3>
+                </div>
+
+                <div class="meal-sections">
+                    <!-- Desayuno -->
+                    <div class="meal-section">
+                        <h3>🌅 Desayuno</h3>
+                        <div class="meal-options">
+                            <div class="meal-option" onclick="selectMeal('desayuno', {nombre: 'Avena con frutas', calorias: 250})">
+                                <h4>Avena con frutas</h4>
+                                <p>250 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('desayuno', {nombre: 'Huevos revueltos con tostada', calorias: 320})">
+                                <h4>Huevos revueltos con tostada</h4>
+                                <p>320 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('desayuno', {nombre: 'Yogurt griego con granola', calorias: 180})">
+                                <h4>Yogurt griego con granola</h4>
+                                <p>180 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('desayuno', {nombre: 'Smoothie de proteína', calorias: 200})">
+                                <h4>Smoothie de proteína</h4>
+                                <p>200 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('desayuno', {nombre: 'Tostada de aguacate', calorias: 280})">
+                                <h4>Tostada de aguacate</h4>
+                                <p>280 calorías</p>
+                            </div>
+                        </div>
+                        <div class="selected-meal" id="selectedBreakfast">
+                            <p>No hay desayuno seleccionado</p>
+                        </div>
+                    </div>
+
+                    <!-- Comida -->
+                    <div class="meal-section">
+                        <h3>🌞 Comida</h3>
+                        <div class="meal-options">
+                            <div class="meal-option" onclick="selectMeal('comida', {nombre: 'Ensalada de pollo', calorias: 350})">
+                                <h4>Ensalada de pollo</h4>
+                                <p>350 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('comida', {nombre: 'Salmón con verduras', calorias: 420})">
+                                <h4>Salmón con verduras</h4>
+                                <p>420 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('comida', {nombre: 'Quinoa con vegetales', calorias: 300})">
+                                <h4>Quinoa con vegetales</h4>
+                                <p>300 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('comida', {nombre: 'Pechuga de pollo asada', calorias: 380})">
+                                <h4>Pechuga de pollo asada</h4>
+                                <p>380 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('comida', {nombre: 'Bowl de atún', calorias: 340})">
+                                <h4>Bowl de atún</h4>
+                                <p>340 calorías</p>
+                            </div>
+                        </div>
+                        <div class="selected-meal" id="selectedLunch">
+                            <p>No hay comida seleccionada</p>
+                        </div>
+                    </div>
+
+                    <!-- Cena -->
+                    <div class="meal-section">
+                        <h3>🌙 Cena</h3>
+                        <div class="meal-options">
+                            <div class="meal-option" onclick="selectMeal('cena', {nombre: 'Pescado a la plancha', calorias: 280})">
+                                <h4>Pescado a la plancha</h4>
+                                <p>280 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('cena', {nombre: 'Ensalada mediterránea', calorias: 220})">
+                                <h4>Ensalada mediterránea</h4>
+                                <p>220 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('cena', {nombre: 'Pollo con brócoli', calorias: 320})">
+                                <h4>Pollo con brócoli</h4>
+                                <p>320 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('cena', {nombre: 'Sopa de verduras', calorias: 150})">
+                                <h4>Sopa de verduras</h4>
+                                <p>150 calorías</p>
+                            </div>
+                            <div class="meal-option" onclick="selectMeal('cena', {nombre: 'Tofu con vegetales', calorias: 240})">
+                                <h4>Tofu con vegetales</h4>
+                                <p>240 calorías</p>
+                            </div>
+                        </div>
+                        <div class="selected-meal" id="selectedDinner">
+                            <p>No hay cena seleccionada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Historial -->
+       <section id="historial" class="section">
+    <div class="historial-container">
+        <h2>Historial por Fecha</h2>
+        <div class="date-filter" style="display:flex; align-items:center; gap:10px;">
+            <label for="historialDate">Selecciona fecha:</label>
+            <input type="date" id="historialDate" />
+            <button id="btnActualizarHistorial" class="btn-primary" type="button">Actualizar</button>
+        </div>
+
+                <!-- Actividades del día -->
+                <div class="historial-activities">
+                    <h3>Actividades</h3>
+                    <div id="historialActivitiesList">
+                        <p>Selecciona una fecha para ver las actividades.</p>
+                    </div>
+                </div>
+
+                <!-- Estadísticas del día -->
+                <div class="historial-stats">
+                    <h3>Estadísticas</h3>
+                    <p>Calorías Consumidas: <span id="histCaloriesConsumed">0</span></p>
+                    <p>Minutos de Actividad: <span id="histActivityMinutes">0</span></p>
+                    <p>Calorías Quemadas: <span id="histCaloriesBurned">0</span></p>
+                </div>
+
+                <!-- Comidas del día -->
+                <div class="historial-meals">
+                    <h3>Comidas</h3>
+                    <p><strong>Desayuno:</strong> <span id="histBreakfast">No hay datos</span></p>
+                    <p><strong>Comida:</strong> <span id="histLunch">No hay datos</span></p>
+                    <p><strong>Cena:</strong> <span id="histDinner">No hay datos</span></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
