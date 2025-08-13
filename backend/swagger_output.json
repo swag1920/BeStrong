@@ -1,0 +1,725 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API BeStrong",
+    "description": "API completa para el sistema de gimnasio digital BeStrong. Incluye gestión de usuarios, actividades, nutrición e historial.",
+    "version": "2.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Operaciones de autenticación y gestión de usuarios"
+    },
+    {
+      "name": "Actividades",
+      "description": "Gestión de actividades físicas"
+    },
+    {
+      "name": "Historial",
+      "description": "Consulta de historial por fechas"
+    },
+    {
+      "name": "Nutrición",
+      "description": "Gestión de comidas y nutrición"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Token JWT en formato: Bearer {token}"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "description": "Registrar un nuevo usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos del usuario",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRegister"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario registrado exitosamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string",
+                  "example": "Usuario registrado exitosamente"
+                },
+                "user": {
+                  "$ref": "#/definitions/UserResponse"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o email ya registrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "description": "Iniciar sesión de usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Credenciales de usuario",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "jwt_token_string"
+                },
+                "user": {
+                  "$ref": "#/definitions/UserResponse"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "description": "Obtener información de usuario por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "description": "Actualizar información de usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos a actualizar",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}/actividades": {
+      "post": {
+        "tags": [
+          "Actividades"
+        ],
+        "description": "Agregar una nueva actividad al usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la actividad",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Activity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Actividad agregada exitosamente",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}/actividades/{activityId}": {
+      "put": {
+        "tags": [
+          "Actividades"
+        ],
+        "description": "Modificar una actividad existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "activityId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la actividad"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Nuevos datos de la actividad",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Activity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actividad modificada exitosamente",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario o actividad no encontrada"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Actividades"
+        ],
+        "description": "Eliminar una actividad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "activityId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la actividad"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actividad eliminada exitosamente",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario o actividad no encontrada"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}/historial": {
+      "get": {
+        "tags": [
+          "Historial"
+        ],
+        "description": "Obtener historial de actividades por fecha",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "description": "Fecha en formato YYYY-MM-DD",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historial obtenido exitosamente",
+            "schema": {
+              "$ref": "#/definitions/HistorialResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}/comidas": {
+      "put": {
+        "tags": [
+          "Nutrición"
+        ],
+        "description": "Actualizar comidas del usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del usuario"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de las comidas",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MealUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comidas actualizadas exitosamente",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Acceso no autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "UserRegister": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Juan Pérez"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456"
+        }
+      }
+    },
+    "UserLogin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "juan@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456"
+        }
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "507f1f77bcf86cd799439011"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Juan Pérez"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@example.com"
+        },
+        "actividades": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        },
+        "comidas": {
+          "$ref": "#/definitions/MealDay"
+        },
+        "estadisticas": {
+          "$ref": "#/definitions/Stats"
+        },
+        "datosPorDia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DayData"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2024-01-01T00:00:00.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2024-01-01T00:00:00.000Z"
+        }
+      }
+    },
+    "UserUpdate": {
+      "type": "object",
+      "properties": {
+        "actividades": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        },
+        "comidas": {
+          "$ref": "#/definitions/MealDay"
+        },
+        "estadisticas": {
+          "$ref": "#/definitions/Stats"
+        },
+        "datosPorDia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DayData"
+          }
+        }
+      }
+    },
+    "Activity": {
+      "type": "object",
+      "properties": {
+        "fecha": {
+          "type": "string",
+          "example": "2024-01-15"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Correr"
+        },
+        "duracion": {
+          "type": "number",
+          "example": 30
+        },
+        "calorias": {
+          "type": "number",
+          "example": 300
+        }
+      }
+    },
+    "MealDay": {
+      "type": "object",
+      "properties": {
+        "desayuno": {
+          "$ref": "#/definitions/Meal"
+        },
+        "comida": {
+          "$ref": "#/definitions/Meal"
+        },
+        "cena": {
+          "$ref": "#/definitions/Meal"
+        }
+      }
+    },
+    "Meal": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Avena con frutas"
+        },
+        "calorias": {
+          "type": "number",
+          "example": 250
+        }
+      }
+    },
+    "Stats": {
+      "type": "object",
+      "properties": {
+        "caloriasConsumidas": {
+          "type": "number",
+          "example": 800
+        },
+        "minutosActividad": {
+          "type": "number",
+          "example": 60
+        },
+        "caloriasQuemadas": {
+          "type": "number",
+          "example": 400
+        }
+      }
+    },
+    "DayData": {
+      "type": "object",
+      "properties": {
+        "fecha": {
+          "type": "string",
+          "example": "2024-01-15"
+        },
+        "comidas": {
+          "$ref": "#/definitions/MealDay"
+        },
+        "estadisticas": {
+          "$ref": "#/definitions/Stats"
+        }
+      }
+    },
+    "MealUpdate": {
+      "type": "object",
+      "properties": {
+        "fecha": {
+          "type": "string",
+          "example": "2024-01-15"
+        },
+        "tipoComida": {
+          "type": "string",
+          "example": "desayuno"
+        },
+        "comida": {
+          "$ref": "#/definitions/Meal"
+        }
+      }
+    },
+    "HistorialResponse": {
+      "type": "object",
+      "properties": {
+        "fecha": {
+          "type": "string",
+          "example": "2024-01-15"
+        },
+        "actividades": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        },
+        "comidas": {
+          "$ref": "#/definitions/MealDay"
+        },
+        "estadisticas": {
+          "$ref": "#/definitions/Stats"
+        }
+      }
+    }
+  }
+}
